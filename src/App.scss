@@ -1,0 +1,11 @@
+.app-container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--secondary-light-background-color);
+	overflow: hidden;
+	box-shadow: var(--secondary-box-shadow);
+}
