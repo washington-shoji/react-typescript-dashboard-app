@@ -86,7 +86,7 @@
 
 	&.closed {
 		overflow: hidden;
-		width: 5%;
+		width: 50px;
 		min-width: 50px;
 
 		align-items: center;
@@ -151,7 +151,7 @@
 
 @media screen and (max-width: 390px) {
 	.sidebar-container {
-		width: 5%;
+		width: 50px;
 		min-width: 50px;
 		align-items: center;
 		.logo-container {
