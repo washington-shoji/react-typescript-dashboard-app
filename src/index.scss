@@ -1,6 +1,12 @@
 :root {
 	--main-background-color: #f6f6f6;
 	--secondary-background-color: #131414;
+	--main-gradient-background-color: linear-gradient(
+		-120deg,
+		rgba(246, 250, 243, 1) 0%,
+		rgba(248, 246, 251, 1) 54%,
+		rgba(230, 244, 251, 1) 100%
+	);
 	--main-light-background-color: #f9f8f3;
 	--secondary-light-background-color: #f4f5f9;
 	--green-color: #5be974;
