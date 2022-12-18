@@ -26,4 +26,17 @@ async function fetchAllRiskZones() {
 	}
 }
 
-export const SydneySuburbRiskDataApi = { fetchBySuburbName, fetchAllRiskZones };
+async function fetchAllSchoolData() {
+	try {
+		const response = await axios.get('http://localhost:9090/api/v1/school');
+		return response.data;
+	} catch (error) {
+		console.error('Error: ', error);
+	}
+}
+
+export const SydneySuburbRiskDataApi = {
+	fetchBySuburbName,
+	fetchAllRiskZones,
+	fetchAllSchoolData,
+};
