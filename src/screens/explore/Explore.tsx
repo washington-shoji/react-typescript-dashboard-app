@@ -1,3 +1,5 @@
+import './Explore.scss';
+
 export default function Explore() {
-	return <div>Explore</div>;
+	return <div className='explore-container'></div>;
 }

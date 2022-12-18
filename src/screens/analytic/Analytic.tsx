@@ -1,3 +1,5 @@
+import './Analytic.scss';
+
 export default function Analytic() {
-	return <div>Analytic</div>;
+	return <div className='analytics-container'></div>;
 }
