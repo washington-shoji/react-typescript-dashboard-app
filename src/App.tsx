@@ -1,14 +1,8 @@
 import './App.scss';
-import Main from './components/main/Main';
-import Sidebar from './components/sidebar/Sidebar';
+import { Layout } from './screens/layout/Layout';
 
 function App() {
-	return (
-		<div className='app-container'>
-			<Sidebar />
-			<Main />
-		</div>
-	);
+	return <Layout />;
 }
 
 export default App;
