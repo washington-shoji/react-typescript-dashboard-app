@@ -5,13 +5,19 @@ import mapOptionState from '../slices/map-option/mapOptionSlice';
 import dashboardDataFetch from '../api-service/dashboard/dashboard';
 import schoolDataFetch from '../api-service/school/school';
 import populationGrowth from '../api-service/population-growth/populationGrowth';
+import suburbDataFetch from '../api-service/suburb/suburb';
+import suburbPolygonData from '../api-service/suburb/suburbPolygon';
+import mainMenuControlState from '../slices/main-menu-control/MainMenuControl.slice';
 export const store = configureStore({
 	reducer: {
 		dashboardMenu: dashboardMenuReducer,
 		navMenuState: navMenuState,
+		mainMenuState: mainMenuControlState,
 		mapOptionState: mapOptionState,
 		dashboardApi: dashboardDataFetch,
+		suburbApi: suburbDataFetch,
 		schoolApi: schoolDataFetch,
+		suburbPolygon: suburbPolygonData,
 		populationGrowthApi: populationGrowth,
 	},
 	devTools: true,
