@@ -8,12 +8,14 @@ import populationGrowth from '../api-service/population-growth/populationGrowth'
 import suburbDataFetch from '../api-service/suburb/suburb';
 import suburbPolygonData from '../api-service/suburb/suburbPolygon';
 import mainMenuControlState from '../slices/main-menu-control/MainMenuControl.slice';
+import apiStatusState from '../slices/api-state/apiStateSlice.slice';
 export const store = configureStore({
 	reducer: {
 		dashboardMenu: dashboardMenuReducer,
 		navMenuState: navMenuState,
 		mainMenuState: mainMenuControlState,
 		mapOptionState: mapOptionState,
+		apiStateStatus: apiStatusState,
 		dashboardApi: dashboardDataFetch,
 		suburbApi: suburbDataFetch,
 		schoolApi: schoolDataFetch,
