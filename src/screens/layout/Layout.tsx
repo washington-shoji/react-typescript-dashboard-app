@@ -31,6 +31,7 @@ export function Layout() {
 		<div className='layout-container'>
 			<Topbar
 				toggleMenu={toggleNavbar}
+				status={'idle'}
 				handleSetSelectedMenu={handleSetSelectedMenu}
 			/>
 			<Sidebar
