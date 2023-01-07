@@ -1,0 +1,15 @@
+.top-submenu-container {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 12px;
+	border-radius: var(--main-border-radius);
+	background-color: var(--main-background-color);
+	box-shadow: var(--g-box-shadow);
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--azure-blue-color);
+		color: var(--main-background-color);
+	}
+}
