@@ -1,0 +1,29 @@
+.topbar-container {
+	z-index: 1;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 24px;
+	padding: 12px;
+	margin-bottom: -72px;
+	position: relative;
+
+	.topbar-menu {
+		padding: 12px;
+		background-color: var(--main-background-color);
+		border-radius: var(--main-border-radius);
+		box-shadow: var(--g-box-shadow);
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--azure-blue-color);
+			color: var(--main-background-color);
+		}
+	}
+
+	.topbar-submenu {
+		display: flex;
+		gap: 6px;
+	}
+}
