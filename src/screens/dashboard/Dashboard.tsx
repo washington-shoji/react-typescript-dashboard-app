@@ -2,141 +2,119 @@ import { useState, useEffect, useCallback } from 'react';
 import './Dashboard.scss';
 import StaticMap from 'react-map-gl';
 import DeckGL from '@deck.gl/react';
-import { SydneySuburbRiskDataApi } from '../../api/layers/sydneySuburbRiskData';
-import { IColours, rgbaColours } from '../../data/colour/colours';
-import { RGBAColor } from 'deck.gl';
-import { MAP_BOX_STYLE } from '../../enum/mapstyle';
 import {
+	getHexagonToolTip,
 	Layers,
-	lightingEffect,
 } from '../../components/layers/dashboard/dashboarLayers';
+import {
+	useAppDispatch,
+	useAppSelector,
+} from '../../redux/custom-hooks/reduxHooks';
+import { fetchSchool } from '../../redux/api-service/school/school';
+import { fetchPopulationGrowth } from './../../redux/api-service/population-growth/populationGrowth';
+import { MapOption } from '../../components/map-option/MapOption';
+import { LAYER_CONFIG } from '../../components/layers/layer-config/layerConfig';
+import { fetchSuburbGis } from '../../redux/api-service/suburb/suburb';
+import { fetchSuburbPolygon } from '../../redux/api-service/suburb/suburbPolygon';
+import { MapInformation } from '../../components/map-information/MapInformation';
+import { FaInfoCircle } from 'react-icons/fa';
+import { setMainMenuControlIsOpen } from '../../redux/slices/main-menu-control/MainMenuControl.slice';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAP_BOX_KEY;
 
-export default function Dashboard() {
-	const [querySuburb, setQuerySuburb] = useState<string>('');
-	const [polygonData, setPolygonData] = useState<[[[number]]]>([[[0]]]);
-	const [geometryData, setGeometryData] = useState<number[]>([]);
-	const [selectedColour, setSelectedColour] = useState<string>('');
-	const [layerColour, setLayerColour] = useState<RGBAColor>([175, 105, 238]);
-	const [geoLayers, setGeoLayers] = useState<any>();
-	const [schoolData, setSchoolData] = useState<number[]>([]);
+type Status = {
+	status: 'idle' | 'loading' | 'error';
+};
 
-	const INITIAL_VIEW_STATE = {
-		latitude:
-			geometryData[1] !== (null || undefined) ? geometryData[1] : -33.865143,
-		longitude:
-			geometryData[0] !== (null || undefined) ? geometryData[0] : 151.2099,
-		zoom: 11,
+export default function Dashboard() {
+	const [information, setInformation] = useState<any>({});
+	const { isOpen } = useAppSelector((state) => state.mainMenuState);
+	const dispatch = useAppDispatch();
+
+	const mapOptionState = useAppSelector(
+		(state) => state.mapOptionState.mapOption
+	);
+
+	const suburbGisData = useAppSelector((state) => state.suburbApi.data);
+	const suburbPolygonData = useAppSelector((state) => state.suburbPolygon.data);
+	const schooldata = useAppSelector((state) => state.schoolApi.data);
+	const populationGrowthdata = useAppSelector(
+		(state) => state.populationGrowthApi.data
+	);
+
+	useEffect(() => {}, [suburbGisData, suburbPolygonData]);
+
+	const [viewState, setViewState] = useState({
+		latitude: suburbGisData.geo_point_2d?.coordinates[0]
+			? suburbGisData.geo_point_2d?.coordinates[0]
+			: -33.865143,
+		longitude: suburbGisData.geo_point_2d?.coordinates[1]
+			? suburbGisData.geo_point_2d?.coordinates[1]
+			: 151.2099,
+		zoom: 12,
 		maxZoom: 20,
 		pitch: 30,
 		bearing: 0,
-	};
+	});
 
-	const MAP_STYLE = MAP_BOX_STYLE.MapBoxDark;
+	const MAP_STYLE = mapOptionState.style;
 
-	const layersCallback = useCallback(() => {
-		function layers() {
-			const layers = Layers(polygonData, schoolData, layerColour);
-			setGeoLayers(layers);
-		}
-		layers();
-	}, [polygonData, layerColour, schoolData]);
-
-	function handleQuerySuburb(event: React.ChangeEvent<HTMLInputElement>) {
-		event.preventDefault();
-		setQuerySuburb(event.target.value);
-	}
-
-	const colourUseCallback = useCallback(() => {
-		function handleLayerColor() {
-			const colourOption = rgbaColours.filter(
-				(option) => option.key === selectedColour
+	// const INITIAL_VIEW_STATE = {
+	// 	latitude: suburbGisData.geo_point_2d?.coordinates[1]
+	// 		? suburbGisData.geo_point_2d?.coordinates[1]
+	// 		: -33.865143,
+	// 	longitude: suburbGisData.geo_point_2d?.coordinates[0]
+	// 		? suburbGisData.geo_point_2d?.coordinates[0]
+	// 		: 151.2099,
+	// 	zoom: 12,
+	// 	maxZoom: 20,
+	// 	pitch: 30,
+	// 	bearing: 0,
+	// };
+	function handleCoordinateState(coordinate: any) {
+		if (coordinate) {
+			dispatch(
+				fetchSuburbPolygon({
+					longitude: coordinate[0],
+					latitude: coordinate[1],
+				})
 			);
-			if (colourOption[0]?.rgbaValues) {
-				setLayerColour(colourOption[0].rgbaValues);
-			}
 		}
-		handleLayerColor();
-	}, [selectedColour]);
-
-	async function handleFetchData(event: { preventDefault: () => void }) {
-		event.preventDefault();
-		const polyArray: any = [];
-		const suburbName = querySuburb.toUpperCase();
-		if (suburbName) {
-			SydneySuburbRiskDataApi.fetchBySuburbName(suburbName).then((result) => {
-				if (result) {
-					polyArray.push(result.polygonData[0].fields.geo_shape);
-					setPolygonData(result.polygonData[0].fields.geo_shape.coordinates);
-					setGeometryData(result.polygonData[0].geometry.coordinates);
-				}
-			});
-		}
-		SydneySuburbRiskDataApi.fetchAllSchoolData().then((result) => {
-			if (result) {
-				let arrayCoordinates: any = [];
-				result.map((value: any) =>
-					arrayCoordinates.push({
-						coordinates: [value.Longitude, value.Latitude],
-					})
-				);
-				setSchoolData(arrayCoordinates);
-			}
-		});
-		return;
 	}
 
-	function handleOnchangeColours(event: React.ChangeEvent<HTMLSelectElement>) {
-		event.preventDefault();
-		setSelectedColour(event.target.value);
-	}
-
-	useEffect(() => {
-		layersCallback();
-		colourUseCallback();
-	}, [colourUseCallback, layersCallback]);
+	const geoLayers = Layers({
+		suburbData: suburbGisData,
+		schoolData: schooldata,
+		populationGrowthLayerData: populationGrowthdata,
+		suburbPolygonData: suburbPolygonData,
+	});
 
 	return (
 		<div className='dashboard-container'>
-			<div className='control-container'>
-				<div className='control-search-title'>
-					<h3>Suburb Info</h3>
-				</div>
-				<div className='control-search'>
-					<form onSubmit={handleFetchData}>
-						<input
-							className='control-search-input'
-							type='text'
-							name='suburb'
-							placeholder='Search for a suburb'
-							value={querySuburb}
-							onChange={(event) => handleQuerySuburb(event)}
-						/>
-						<button className='control-search-button' type='submit'>
-							Submit
-						</button>
-					</form>
-				</div>
-				<div className='control-colour'>
-					<select
-						className='control-colour-select'
-						onChange={handleOnchangeColours}
-						value={selectedColour}
-					>
-						{rgbaColours.map((value: IColours) => {
-							return <option key={value.id}>{value.key}</option>;
-						})}
-					</select>
-				</div>
-			</div>
 			<div className='map-container'>
 				<DeckGL
-					initialViewState={INITIAL_VIEW_STATE}
+					viewState={viewState}
+					onViewStateChange={(event) => {
+						setViewState(event.viewState);
+					}}
+					//initialViewState={INITIAL_VIEW_STATE}
 					controller={true}
 					layers={geoLayers}
-					effects={[lightingEffect]}
+					effects={[LAYER_CONFIG.lightingEffect]}
+					getTooltip={(info: any) => {
+						return getHexagonToolTip(info);
+					}}
+					onClick={(info) => {
+						if (info.object) {
+							setInformation(info.object);
+						}
+
+						if (info.coordinate) {
+							handleCoordinateState(info.coordinate);
+							dispatch(setMainMenuControlIsOpen(true));
+						}
+					}}
 				>
 					<StaticMap
 						mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
@@ -147,6 +125,22 @@ export default function Dashboard() {
 					/>
 				</DeckGL>
 			</div>
+			<div className='map-option'>
+				<MapOption />
+			</div>
+			{isOpen && (
+				<div className='map-data-info'>
+					<MapInformation information={information} />
+				</div>
+			)}
+			{!isOpen && (
+				<div className='map-data-info-icon-container'>
+					<FaInfoCircle
+						className='map-data-info-icon orange'
+						onClick={() => dispatch(setMainMenuControlIsOpen(!isOpen))}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }
