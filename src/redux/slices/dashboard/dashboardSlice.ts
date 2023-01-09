@@ -11,7 +11,7 @@ const initialState: IDashboardMenuState = {
 };
 
 export const dashboardMenuSlice = createSlice({
-	name: 'dashboardMenu',
+	name: 'apiStatusState',
 	initialState: initialState,
 	reducers: {
 		setSuburbName: (state, action: PayloadAction<string>) => {
