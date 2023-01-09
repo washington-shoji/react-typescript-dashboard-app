@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { IGeoSuburb } from '../../../interface/poligon-data/poligonData.interface';
+import {
+	setApiLoadingState,
+	setApiSuccessState,
+	setApiErrorState,
+} from '../../slices/api-state/apiStateSlice.slice';
 import { RootState } from '../../store/store';
 
 type FetchError = { message: string };
@@ -18,11 +23,14 @@ export const fetchSuburbGis = createAsyncThunk<
 	undefined,
 	{ rejectValue: FetchError }
 >('suburb/fetch', async (_: undefined, thunkApi) => {
+	thunkApi.dispatch(setApiLoadingState());
 	try {
 		const response = await axios.get<IGeoSuburb>(BASE_URL);
 		const data: IGeoSuburb = response.data;
+		thunkApi.dispatch(setApiSuccessState());
 		return data;
 	} catch (error: any) {
+		thunkApi.dispatch(setApiErrorState());
 		return thunkApi.rejectWithValue({
 			message: error.message,
 		});
