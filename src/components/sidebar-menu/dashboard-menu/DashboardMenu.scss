@@ -1,0 +1,38 @@
+.dashboard-menu-container {
+	display: flex;
+	gap: 12px;
+	flex-direction: column;
+
+	.dashboard-menu-control {
+		.control-search {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			margin-top: 12px;
+
+			.control-search-input {
+				padding: 10px;
+				outline: none;
+				border: none;
+				border-radius: var(--main-border-radius);
+				box-shadow: var(--g-box-shadow);
+
+				&:focus {
+					color: var(--azure-blue-color);
+					outline: 1px solid var(--azure-blue-color);
+				}
+			}
+
+			.control-search-button {
+				padding: 10px;
+				border: none;
+				border-radius: var(--main-border-radius);
+				box-shadow: var(--g-box-shadow);
+				font-size: 14px;
+				color: var(--white-text-color);
+				background-color: var(--azure-blue-color);
+				cursor: pointer;
+			}
+		}
+	}
+}
