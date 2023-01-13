@@ -1,0 +1,34 @@
+.map-option-container {
+	display: flex;
+	gap: 2px;
+	align-content: center;
+	padding: 1px;
+	border-radius: var(--main-border-radius);
+	box-shadow: var(--g-box-shadow);
+	background-color: var(--main-background-color);
+
+	.map-image {
+		display: flex;
+		border: 2px solid transparent;
+		border-radius: var(--main-border-radius);
+		outline: none;
+	}
+
+	.map-option-button {
+		display: inline-flex;
+		border: 2px solid transparent;
+		border-radius: var(--main-border-radius);
+		outline: none;
+		transition: transform 0.2s;
+		cursor: pointer;
+		&:hover {
+			border: 2px solid var(--azure-blue-color);
+			background-color: var(--azure-blue-color);
+		}
+	}
+	.map-option-image {
+		height: 70px;
+		width: 70px;
+		border-radius: var(--main-border-radius);
+	}
+}
